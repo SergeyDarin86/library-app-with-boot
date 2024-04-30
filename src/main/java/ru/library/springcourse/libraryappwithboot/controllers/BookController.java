@@ -102,14 +102,14 @@ public class BookController {
     @GetMapping("/books/{id}/makeFree")
     public String makeBookFree(@PathVariable("id") int id) {
         booksService.makeBookFree(id);
-        return "redirect: /library/books/{id}";
+        return "redirect:/library/books/{id}";
     }
 
     //изменить на "PatchMapping"
     @GetMapping("/books/{id}/assignPerson")
     public String assignPerson(@PathVariable("id") int id, @ModelAttribute("person") Person person) {
         booksService.assignPerson(id, person.getPersonId());
-        return "redirect: /library/books/{id}";
+        return "redirect:/library/books/{id}";
     }
 
     @DeleteMapping("/books/{id}")
