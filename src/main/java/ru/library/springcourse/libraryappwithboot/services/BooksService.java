@@ -1,6 +1,7 @@
 package ru.library.springcourse.libraryappwithboot.services;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,18 +25,17 @@ public class BooksService {
 
     private final BooksRepository booksRepository;
 
-    private final EntityManager entityManager;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     private final PeopleRepository peopleRepository;
 
     @Autowired
-    public BooksService(BooksRepository booksRepository, EntityManager entityManager, PeopleRepository peopleRepository) {
+    public BooksService(BooksRepository booksRepository, PeopleRepository peopleRepository) {
         this.booksRepository = booksRepository;
-        this.entityManager = entityManager;
         this.peopleRepository = peopleRepository;
     }
 
-    //TODO: переделать стремную логику в этом методе
     public List<Book> findAllBooksByPerson(Person person) {
         countDaysTheBookIsTakenByPersonNew(person);
         return booksRepository.findAllByPerson(person);
@@ -114,24 +114,24 @@ public class BooksService {
     public void assignPerson(int bookId, int personId) {
         log.info("Start method assignPerson(bookId, personId) for bookService, bookId is: {}, personId is : {} ", bookId, personId);
         Session session = entityManager.unwrap(Session.class);
-        Person person = session.load(Person.class, personId);
+        Person person = session.getReference(Person.class, personId);
         show(bookId).setTakenAt(new Date());
         show(bookId).setPerson(person);
     }
 
-    public Optional<Book> getBookByTitleStartingWith(String title){
+    public Optional<Book> getBookByTitleStartingWith(String title) {
 //        return booksRepository.findBookByTitleStartingWith(title);
         return null;
     }
 
     // Метод, который будет возвращать List<Book>
-    public List<Book> getBookListByTitleStartingWith(String title){
+    public List<Book> getBookListByTitleStartingWith(String title) {
         log.info("Start method getBookListByTitleStartingWith(title) for bookService, title is: {} ", title);
         return booksRepository.findBookByTitleStartingWith(title);
     }
 
     // Данный метод можно использовать вместо sql-запроса, который был написан вручную в PeopleRepository
-    public Optional<Person> getBookOwner(int bookId){
+    public Optional<Person> getBookOwner(int bookId) {
         return booksRepository.findById(bookId).map(Book::getPerson);
     }
 }
