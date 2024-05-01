@@ -39,7 +39,7 @@ public class BookController {
     @GetMapping("/people")
     public String people(Model model) {
         model.addAttribute("people", peopleService.allPeople());
-        return "/people/readers";
+        return "people/readers";
     }
 
     @GetMapping("/books")
@@ -47,7 +47,7 @@ public class BookController {
                         @RequestParam(value = "page", required = false) Integer page,
                         @RequestParam(value = "limitOfBooks", required = false) Integer limitOfBooks) {
         model.addAttribute("books", booksService.findAll(page, limitOfBooks, isSortedByYear));
-        return "/books/books";
+        return "books/books";
     }
 
     @GetMapping("/newBook")
