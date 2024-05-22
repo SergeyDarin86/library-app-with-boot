@@ -8,7 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import ru.library.springcourse.libraryappwithboot.dto.PersonDto;
 import ru.library.springcourse.libraryappwithboot.models.Person;
+import ru.library.springcourse.libraryappwithboot.models.PersonForDto;
 import ru.library.springcourse.libraryappwithboot.services.BooksService;
 import ru.library.springcourse.libraryappwithboot.services.PeopleService;
 import ru.library.springcourse.libraryappwithboot.util.PersonErrorResponse;
@@ -37,20 +39,51 @@ public class PeopleRestController {
     }
 
 
+//    @GetMapping("/peopleNew/{id}")
+//    public Person show(@PathVariable("id") int id) {
+//        // работа с сервисом книг (если нам необходимы книги пользователя)
+//        booksService.findAllBooksByPerson(peopleService.showWithException(id));
+//        return peopleService.showWithException(id);
+//    }
+
     @GetMapping("/peopleNew/{id}")
-    public Person show(@PathVariable("id") int id) {
-        // работа с сервисом книг (если нам необходимы книги пользователя)
-        booksService.findAllBooksByPerson(peopleService.showWithException(id));
-        return peopleService.showWithException(id);
+    public PersonDto show(@PathVariable("id") int id) {
+        return peopleService.showForDtoWithException(id);
     }
+
+//    @GetMapping("/allPeople")
+//    public List<Person> people() {
+//       return peopleService.allPeople();
+//    }
 
     @GetMapping("/allPeople")
-    public List<Person> people() {
-       return peopleService.allPeople();
+    public List<PersonDto> peopleDto() {
+        return peopleService.allPeopleForDto();
     }
 
+//    @PostMapping("/registration")
+//    public ResponseEntity<HttpStatus> registration(@RequestBody @Valid Person person
+//            , BindingResult bindingResult) {
+//
+//        if (bindingResult.hasErrors()){
+//            StringBuilder errorMsg = new StringBuilder();
+//            List<FieldError> errorList = bindingResult.getFieldErrors();
+//            errorList.stream().forEach(fieldError -> errorMsg
+//                    .append(fieldError.getField())
+//                    .append(" - ").append(fieldError.getDefaultMessage())
+//                    .append(";"));
+//
+//            throw new PersonNotCreatedException(errorMsg.toString());
+//        }
+//
+//
+//        peopleService.save(person);
+//        //отправляем Http-ответ со статусом 200 и пустым телом
+//        return ResponseEntity.ok(HttpStatus.OK);
+//    }
+
     @PostMapping("/registration")
-    public ResponseEntity<HttpStatus> registration(@RequestBody @Valid Person person
+    public ResponseEntity<HttpStatus> registration(@RequestBody @Valid PersonDto personDto
             , BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()){
@@ -65,7 +98,7 @@ public class PeopleRestController {
         }
 
 
-        peopleService.save(person);
+        peopleService.saveForDto(peopleService.convertToPerson(personDto));
         //отправляем Http-ответ со статусом 200 и пустым телом
         return ResponseEntity.ok(HttpStatus.OK);
     }
@@ -86,7 +119,7 @@ public class PeopleRestController {
                 e.getMessage(),
                 System.currentTimeMillis()
         );
-        // В HTTP ответе будет тело ответа (response) и статус в заголовке http-ответа
+        // В HTTP-ответе будет тело ответа (response) и статус в заголовке http-ответа
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
