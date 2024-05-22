@@ -1,5 +1,6 @@
 package ru.library.springcourse.libraryappwithboot.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
@@ -60,6 +61,7 @@ public class Book {
         this.takenAt = takenAt;
     }
 
+    @JsonIgnore
     public Person getPerson() {
         return person;
     }

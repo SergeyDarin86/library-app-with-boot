@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.library.springcourse.libraryappwithboot.models.Person;
 import ru.library.springcourse.libraryappwithboot.repositories.PeopleRepository;
+import ru.library.springcourse.libraryappwithboot.util.PersonNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +59,13 @@ public class PeopleService {
     public Optional<Person>findPersonByBookId(Integer bookId){
         log.info("Start method findPersonByBookId(bookId) for peopleService, bookId is: {}", bookId);
         return peopleRepository.findPersonByBookId(bookId);
+    }
+
+    // метод для работы с ExceptionHandler и RequestBody
+    public Person showWithException(int personId){
+        log.info("Start method show(id) for peopleService, id is: {}", personId);
+
+        return peopleRepository.findById(personId).orElseThrow(PersonNotFoundException::new);
     }
 
 }
